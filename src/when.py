@@ -1,9 +1,9 @@
 import io
-import reverse_geocoder
+
 import pandas as pd
 
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from pathlib import Path
 from exif2pandas import extract
@@ -11,17 +11,21 @@ from exif2pandas import extract
 
 
 class When:
-    def __int__(
+    def __init__(
             self,
             feather_location,
             pictures_root: List[Path],
             cities_file=None,
             exclude_countries=(),
             processes=5,
+            first_interval: Optional[datetime.date] = None,
+            last_interval: Optional[datetime.date] = None,
     ):
         self.cities_file = cities_file
         self.exclude_countries = exclude_countries
         self.feather_location = feather_location
+        self.first_interval = first_interval
+        self.last_interval = last_interval
 
         # get raw dataframe with wide exif rows
         self.raw_exif_df = extract.extract_feather(
@@ -45,11 +49,18 @@ class When:
         """
         Returns dataframe with country and city name taken from gps data
         """
-        with open(self.cities_file, encoding='utf-8') as f:
-            self.geocoder = reverse_geocoder.RGeocoder(
+        import reverse_geocoder
+        if self.cities_file:
+            with open(self.cities_file, encoding='utf-8') as f:
+                geocoder = reverse_geocoder.RGeocoder(
+                    mode=2,
+                    verbose=True,
+                    stream=io.StringIO(f.read())
+                )
+        else:
+            geocoder = reverse_geocoder.RGeocoder(
                 mode=2,
                 verbose=True,
-                stream=io.StringIO(f.read())
             )
 
         # for the location purposed we can drop all the other columns,
@@ -67,7 +78,7 @@ class When:
                 ['cleaned_latitude', 'cleaned_longitude']
             ].itertuples(index=False)
         ]
-        country_df = pd.DataFrame(self.geocoder.query(tuple_locs))
+        country_df = pd.DataFrame(geocoder.query(tuple_locs))
         # add date index, geocoder preservers the
         # order of the rows so this is fine
         country_df.index = df_location.index
@@ -76,8 +87,12 @@ class When:
 
     def get_intervals(self):
         # lol the most hacky way to get the index at loc 0
-        previous_date = datetime(1993, 11, 30)
-        # previous_date = list(full_df[:1].to_dict(orient='index').keys())[0]
+
+        if self.first_interval:
+            previous_date = self.first_interval
+        else:
+            previous_date = list(self.countries_df[:1].to_dict(orient='index').keys())[0]
+
         previous_country_code = 'CZ'
         previous_country = 'Czech Republic'
 
@@ -109,11 +124,16 @@ class When:
 
 
         # add the last interval
-        dt = datetime.today()
-        days = (dt - previous_date).days
+        if self.last_interval:
+            last_interval = self.last_interval
+
+        else:
+            last_interval = datetime.today()
+
+        days = (last_interval - previous_date).days
         intervals.append({
             'from': previous_date.date(),
-            'to': dt.date().isoformat(),
+            'to': last_interval.date().isoformat(),
             'days': days,
             'country': previous_country,
             'country_code': previous_country_code
