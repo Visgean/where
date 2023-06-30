@@ -10,10 +10,9 @@ except ImportError:
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-
 setup(
-    name="photos-where",
-    version="1.1",
+    name="photos_where",
+    version="1.2",
     description="Analyze exif data",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -21,9 +20,9 @@ setup(
     author_email="visgean@gmail.com",
     url="https://github.com/visgean/where",
     packages=[
-        "src",
+        "photos_where",
     ],
-    package_dir={"src": "src"},
+    package_dir={"photos_where": "photos_where"},
     license="MIT",
     keywords="exif sql",
     classifiers=[
@@ -34,7 +33,8 @@ setup(
     install_requires=[
         "exif2pandas",
         "pandas",
-        "matplotlib"
+        "matplotlib",
+        "reverse-geocoder==1.5.1",
     ],
-    entry_points={"console_scripts": ["where-when = src.main:main"]},
+    entry_points={"console_scripts": ["photos_where = photos_where.main:main"]},
 )

@@ -23,7 +23,7 @@ class Where:
     ):
         self.cities_file = cities_file
         if cities_file is None:
-            self.cities_file = pkg_resources.resource_filename('src', 'cities.csv')
+            self.cities_file = pkg_resources.resource_filename('photos_where', 'cities.csv')
 
         self.ignore_countries = ignore_countries
         self.feather_location = feather_location
@@ -91,15 +91,14 @@ class Where:
 
 
     def _get_intervals(self):
-        # lol the most hacky way to get the index at loc 0
+        first_row = self.countries_df[:1].to_dict(orient='index')
+        previous_date = list(first_row.keys())[0]
+        previous_country_code = first_row[previous_date]['cc']
+        previous_country = first_row[previous_date]['admin1']
+
 
         if self.first_interval:
             previous_date = self.first_interval
-        else:
-            previous_date = list(self.countries_df[:1].to_dict(orient='index').keys())[0]
-
-        previous_country_code = 'CZ'
-        previous_country = 'Czech Republic'
 
         intervals = []
 
