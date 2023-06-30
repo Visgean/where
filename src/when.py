@@ -35,17 +35,17 @@ class When:
         )
 
         # extract country name from gps data
-        self.countries_df = self.get_countries_df()
+        self.countries_df = self._get_countries_df()
 
         # create intervals based on the dates and gps
-        self.intervals = self.get_intervals()
+        self.intervals = self._get_intervals()
         self.intervals_df = pd.DataFrame(self.intervals)
 
         # create dataframe where every day has country code:
-        self.day_df = self.get_country_per_day_df()
+        self.day_df = self._get_country_per_day_df()
 
 
-    def get_countries_df(self):
+    def _get_countries_df(self):
         """
         Returns dataframe with country and city name taken from gps data
         """
@@ -85,7 +85,7 @@ class When:
         return df_location.join(country_df)
 
 
-    def get_intervals(self):
+    def _get_intervals(self):
         # lol the most hacky way to get the index at loc 0
 
         if self.first_interval:
@@ -142,7 +142,7 @@ class When:
         return intervals
 
 
-    def get_country_per_day_df(self):
+    def _get_country_per_day_df(self):
         intervals_full = []
 
         for i in self.intervals:
