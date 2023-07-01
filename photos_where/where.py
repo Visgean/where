@@ -87,7 +87,9 @@ class Where:
         # add date index, geocoder preservers the
         # order of the rows so this is fine
         country_df.index = df_location.index
-        return df_location.join(country_df)
+        df = df_location.join(country_df)
+        df.sort_index(inplace=True)
+        return df
 
 
     def _get_intervals(self):
