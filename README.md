@@ -15,9 +15,9 @@ See ``example.ipynb`` for example graphs and data frames exported.
 
 See PYPI [Python package](https://pypi.org/project/photos-where/). 
 
-``
+```
 $ pip install photos-where
-``
+```
 
 ## Use:
 
