@@ -31,4 +31,5 @@ jobs:
       run: | 
         photos_where example_photos/
         ls where/intervals.csv
+        ls where/non-existent.csv
         
