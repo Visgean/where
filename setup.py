@@ -35,6 +35,7 @@ setup(
         "pandas",
         "matplotlib",
         "reverse-geocoder==1.5.1",
+        "pyarrow",
     ],
     entry_points={"console_scripts": ["photos_where = photos_where.main:main"]},
 )
