@@ -1,3 +1,4 @@
 include README.md
 include LICENSE
 include cities.csv
+include photos_where/cities.csv
