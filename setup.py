@@ -12,7 +12,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="photos_where",
-    version="1.9",
+    version="2.0",
     description="Analyze exif data",
     long_description=long_description,
     long_description_content_type="text/markdown",

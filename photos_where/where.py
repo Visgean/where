@@ -1,4 +1,5 @@
 import io
+import logging
 
 import pandas as pd
 
@@ -8,6 +9,9 @@ from typing import List, Optional
 from pathlib import Path
 from exif2pandas import extract
 import pkg_resources
+
+class WhereException(Exception):
+    pass
 
 
 class Where:
@@ -61,7 +65,7 @@ class Where:
                     stream=io.StringIO(f.read())
                 )
         else:
-            print('using geocoder default cities file')
+            logging.info('using geocoder default cities file')
             geocoder = reverse_geocoder.RGeocoder(
                 mode=2,
                 verbose=True,
@@ -75,6 +79,9 @@ class Where:
             .dropna()
             .set_index('cleaned_date')
         )
+
+        if df_location.empty:
+            raise WhereException("No pictures with EXIF locations found.")
 
         tuple_locs = [
             (float(x), float(y))
