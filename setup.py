@@ -12,7 +12,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="photos_where",
-    version="1.4",
+    version="1.9",
     description="Analyze exif data",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -23,6 +23,9 @@ setup(
         "photos_where",
     ],
     package_dir={"photos_where": "photos_where"},
+    package_data={
+        'photos_where': ['cities.csv'],
+    },
     license="MIT",
     keywords="exif sql",
     classifiers=[
