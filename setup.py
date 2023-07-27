@@ -12,7 +12,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="photos_where",
-    version="2.0",
+    version="2.1",
     description="Analyze exif data",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -24,7 +24,7 @@ setup(
     ],
     package_dir={"photos_where": "photos_where"},
     package_data={
-        'photos_where': ['cities.csv'],
+        'photos_where': ['cities.csv', 'world.svg'],
     },
     license="MIT",
     keywords="exif sql",
@@ -39,6 +39,8 @@ setup(
         "matplotlib",
         "reverse-geocoder==1.5.1",
         "pyarrow",
+        "Jinja2",
+        "seaborn"
     ],
     entry_points={"console_scripts": ["photos_where = photos_where.main:main"]},
 )

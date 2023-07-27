@@ -27,7 +27,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    '-i'
+    '-i',
     "--ignore_countries",
     nargs="+",
     help="Country codes to ignore",
@@ -59,6 +59,8 @@ def main():
     if args.ignore:
         ignore_countries = args.ignore
 
+    print(f'ignoring: {ignore_countries}')
+
     where = Where(
         feather_location=feather_loc,
         pictures_root=picture_dirs,
@@ -81,6 +83,9 @@ def main():
 
     where.day_df['country_code'].hist(by=where.day_df.index.year, ax=ax, rwidth=0.5)
     savefig(out_dir / 'years.jpg')
+
+    where.generate_wiki_map(out_dir)
+
 
 
 if __name__ == "__main__":

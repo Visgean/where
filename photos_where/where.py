@@ -1,14 +1,20 @@
 import io
 import logging
+from importlib.resources import files
 
 import pandas as pd
+import jinja2
+import seaborn as sns
 
 from datetime import datetime
 from typing import List, Optional
 
 from pathlib import Path
+
+from matplotlib.colors import Normalize
+
 from exif2pandas import extract
-import pkg_resources
+
 
 class WhereException(Exception):
     pass
@@ -18,7 +24,7 @@ class Where:
     def __init__(
             self,
             pictures_root: List[Path],
-            feather_location = None,
+            feather_location=None,
             cities_file=None,
             ignore_countries=(),
             processes=5,
@@ -27,7 +33,7 @@ class Where:
     ):
         self.cities_file = cities_file
         if cities_file is None:
-            self.cities_file = pkg_resources.resource_filename('photos_where', 'cities.csv')
+            self.cities_file = files('photos_where').joinpath('cities.csv')
 
         self.ignore_countries = ignore_countries
         self.feather_location = feather_location
@@ -50,7 +56,6 @@ class Where:
 
         # create dataframe where every day has country code:
         self.day_df = self._get_country_per_day_df()
-
 
     def _get_countries_df(self):
         """
@@ -98,13 +103,11 @@ class Where:
         df.sort_index(inplace=True)
         return df
 
-
     def _get_intervals(self):
         first_row = self.countries_df[:1].to_dict(orient='index')
         previous_date = list(first_row.keys())[0]
         previous_country_code = first_row[previous_date]['cc']
         previous_country = first_row[previous_date]['admin1']
-
 
         if self.first_interval:
             previous_date = self.first_interval
@@ -135,7 +138,6 @@ class Where:
                 previous_country_code = country_code
                 previous_country = country
 
-
         # add the last interval
         if self.last_interval:
             last_interval = self.last_interval
@@ -154,7 +156,6 @@ class Where:
 
         return intervals
 
-
     def _get_country_per_day_df(self):
         intervals_full = []
 
@@ -171,3 +172,25 @@ class Where:
             'country_code': 'string',
         })
         return df_days
+
+    def generate_wiki_map(self, out_dir: Path):
+        hist_dict = self.day_df['country_code'].value_counts().to_dict()
+        palette = sns.color_palette("flare", as_cmap=True)
+
+        normalize = Normalize(vmin=0, vmax=80, clip=True)
+
+        def get_color(val):
+            r, g, b, t = (int(x * 255) for x in palette(normalize(val)))
+            return f'rgb({r}, {g}, {b})'
+
+        color_dict = {
+            country: get_color(days)
+            for country, days in hist_dict.items()
+        }
+
+        templateLoader = jinja2.FileSystemLoader(searchpath=files('photos_where'))
+        env = jinja2.Environment(loader=templateLoader)
+
+        template_world = env.get_template("world.svg")
+        out_world = out_dir / 'world.svg'
+        out_world.write_text(template_world.render(color_dict=color_dict))
