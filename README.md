@@ -6,6 +6,35 @@ It relies on my package [exif2pandas](https://github.com/Visgean/exif2pandas/). 
 
 In case some of your photos contain bad gps data that show that you have been to countries where you have never been you can use ``ignore_countries`` argument. 
 
+## world map
+
+![image-20230727131720726](assets/image-20230727131720726.png)
+
+Generated world map with colored regions according to how many days you have spent in the country.
+
+## Pie graph with number of days you spent in a country
+
+![image-20230727131816623](assets/image-20230727131816623.png)
+
+## CSV file with your travel list:
+
+``` 
+id,from,to,days,country,country_code
+4,2015-11-07,2015-11-09,1,Scotland,GB
+5,2015-11-09,2015-12-12,32,Praha,CZ
+6,2015-12-12,2015-12-12,0,Budapest,HU
+7,2015-12-12,2015-12-12,0,Praha,CZ
+8,2015-12-12,2015-12-15,2,Budapest,HU
+
+```
+
+note that the country column is usually wrong - this is because the cities.csv is not consisent with administrative boundaries beyond country_code. 
+
+## Year by year histograms
+
+![image-20230727132504796](assets/image-20230727132504796.png)
+
+
 
 ## Jupyter examples:
 
