@@ -34,6 +34,12 @@ note that the country column is usually wrong - this is because the cities.csv i
 
 ![image-20230727132504796](assets/image-20230727132504796.png)
 
+## Raw dataframes:
+
+Finally there is a raw dataframe with exif data per image file:
+
+![image-20230727132834377](assets/image-20230727132834377.png)
+
 
 
 ## Jupyter examples:
